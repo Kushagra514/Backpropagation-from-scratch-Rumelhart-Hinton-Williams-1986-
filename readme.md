@@ -94,3 +94,53 @@ python 2neruon_layer.py
 ```
 
 The script prints the loss and gradient values at each iteration, helping visualize how the model updates over time.
+
+---
+
+# Day 3: Hidden Neuron Layer
+
+Day 3 introduces a two-layer neural network in [hidden_neuron_layer.py](hidden_neuron_layer.py). The network takes two input values, passes them through a hidden layer containing two neurons, and produces one output value.
+
+## Network structure
+
+```text
+2 inputs -> 2 hidden neurons -> 1 output neuron
+```
+
+The forward pass calculates the hidden layer first:
+
+```python
+z1 = w1 @ x + b1
+h = sigmoid(z1)
+```
+
+The hidden activations are then used by the output neuron:
+
+```python
+z2 = w2 @ h + b2
+y_hat = sigmoid(z2)
+```
+
+The model uses squared error loss:
+
+```python
+loss = 0.5 * (y_hat - y) ** 2
+```
+
+During the backward pass, the output error is propagated back through the output weights and the hidden-layer sigmoid derivatives:
+
+```python
+delta2 = (y_hat - y) * y_hat * (1 - y_hat)
+dL_dh = w2.T @ delta2
+delta1 = dL_dh * h * (1 - h)
+```
+
+Gradients are calculated for `w1`, `b1`, `w2`, and `b2`, then all parameters are updated with gradient descent. This demonstrates how backpropagation learns through a hidden layer instead of updating only the output neuron.
+
+## Run it
+
+```bash
+python hidden_neuron_layer.py
+```
+
+The script prints the loss for each of the 10 training iterations.
