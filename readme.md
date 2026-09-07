@@ -186,3 +186,20 @@ The loss is the average of the per-example squared errors:
 ```python
 loss = (1 / N) * sum(0.5 * (y_hat[0][k] - Y[0][k]) ** 2 for k in range(N))
 ```
+
+## Backward pass
+
+The output delta applies the squared-error derivative, the sigmoid derivative, and the average over the four examples:
+
+```python
+delta2 = (y_hat - Y) * y_hat * (1 - y_hat) / N
+```
+
+The script uses this delta to calculate gradients for the output weights and bias. It then propagates the error through `w2` and the hidden sigmoid activations:
+
+```python
+dL_dh = w2.T @ delta2
+delta1 = dL_dh * H * (1 - H)
+```
+
+Finally, it accumulates `dw1`, `db1`, `dw2`, and `db2` across all examples and updates every parameter with gradient descent.
