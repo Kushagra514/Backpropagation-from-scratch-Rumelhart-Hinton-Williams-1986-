@@ -144,3 +144,9 @@ python hidden_neuron_layer.py
 ```
 
 The script prints the loss for each of the 10 training iterations.
+
+---
+
+# Day 4: Multiple Examples with a Hidden Layer
+
+[multiexample_back_prop.py](multiexample_back_prop.py) extends the hidden-layer example to train on four examples at once. It uses a network with two input features, two hidden neurons, and one output neuron.
