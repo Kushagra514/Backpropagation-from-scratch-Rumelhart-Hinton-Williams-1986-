@@ -203,3 +203,11 @@ delta1 = dL_dh * H * (1 - H)
 ```
 
 Finally, it accumulates `dw1`, `db1`, `dw2`, and `db2` across all examples and updates every parameter with gradient descent.
+
+## Run it
+
+```bash
+python multiexample_back_prop.py
+```
+
+The script prints the loss before each parameter update and reports the iteration number. With the current initialization, the loss decreases to approximately `0.093039` by iteration `999`, showing the network learning from all four examples in each batch update.
