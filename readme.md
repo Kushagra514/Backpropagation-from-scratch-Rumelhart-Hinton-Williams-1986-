@@ -164,3 +164,25 @@ Y = [[1, 0, 1, 0]]
 ```
 
 The script trains for `1000` iterations with a learning rate of `0.1`. The weights and biases are initialized explicitly so each step of the calculation remains visible.
+
+## Forward pass
+
+For every iteration, the script computes the hidden pre-activations and applies the sigmoid function to each example:
+
+```python
+z1 = w1 @ X + b1
+H = sigmoid(z1)
+```
+
+The output neuron then combines the hidden activations and produces one prediction per example:
+
+```python
+z2 = w2 @ H + b2
+y_hat = sigmoid(z2)
+```
+
+The loss is the average of the per-example squared errors:
+
+```python
+loss = (1 / N) * sum(0.5 * (y_hat[0][k] - Y[0][k]) ** 2 for k in range(N))
+```
