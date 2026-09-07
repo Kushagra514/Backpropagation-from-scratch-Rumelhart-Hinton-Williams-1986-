@@ -150,3 +150,17 @@ The script prints the loss for each of the 10 training iterations.
 # Day 4: Multiple Examples with a Hidden Layer
 
 [multiexample_back_prop.py](multiexample_back_prop.py) extends the hidden-layer example to train on four examples at once. It uses a network with two input features, two hidden neurons, and one output neuron.
+
+## Data and parameters
+
+The input matrix stores features by row and examples by column:
+
+```python
+X = [
+	[2, 1, 3, 0],
+	[3, 1, 2, 1],
+]
+Y = [[1, 0, 1, 0]]
+```
+
+The script trains for `1000` iterations with a learning rate of `0.1`. The weights and biases are initialized explicitly so each step of the calculation remains visible.
