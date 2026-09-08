@@ -217,3 +217,19 @@ The script prints the loss before each parameter update and reports the iteratio
 # Day 5: Modular Multi-Example Backpropagation
 
 Day 5 updates [multiexample_back_prop.py](multiexample_back_prop.py) to make the multi-example network easier to verify and understand. The architecture is still a `2 -> 2 -> 1` sigmoid network, but its loss calculation, gradient calculation, gradient checking, and training loop are separated into explicit stages.
+
+## Architecture
+
+The script keeps the model parameters and dataset at module scope:
+
+```text
+X (2 features x 4 examples)
+	|
+	v
+W1, b1 -> Z1 -> sigmoid -> H (2 hidden neurons x 4 examples)
+	|
+	v
+W2, b2 -> Z2 -> sigmoid -> y_hat (1 output x 4 examples)
+```
+
+Each column represents one training example. `w1` and `b1` connect the two input features to the hidden layer, while `w2` and `b2` connect the hidden layer to the single output neuron.
