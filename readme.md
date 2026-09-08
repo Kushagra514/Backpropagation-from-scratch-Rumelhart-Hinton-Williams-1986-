@@ -243,3 +243,13 @@ loss, dw1, db1, dw2, db2
 ```
 
 Keeping these responsibilities explicit lets the same loss function be reused by numerical gradient checking while the training loop consumes the analytical gradients.
+
+## Numerical gradient checking
+
+Before normal training begins, `numerical_gradient(...)` checks selected parameters using the central-difference approximation:
+
+```python
+gradient = (loss_plus - loss_minus) / (2 * epsilon)
+```
+
+For each checked weight or bias, the function temporarily evaluates the loss at `parameter + epsilon` and `parameter - epsilon`, then restores the original value. The script prints the analytical and numerical gradients for `w1`, `b1`, `w2`, and `b2` so the chain-rule implementation can be compared against an independent estimate.
