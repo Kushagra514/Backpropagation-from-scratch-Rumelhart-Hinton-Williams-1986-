@@ -253,3 +253,19 @@ gradient = (loss_plus - loss_minus) / (2 * epsilon)
 ```
 
 For each checked weight or bias, the function temporarily evaluates the loss at `parameter + epsilon` and `parameter - epsilon`, then restores the original value. The script prints the analytical and numerical gradients for `w1`, `b1`, `w2`, and `b2` so the chain-rule implementation can be compared against an independent estimate.
+
+## Training and verification
+
+After gradient checking, the normal training loop calls `compute_gradients(...)` 1,000 times and updates every weight and bias with learning rate `0.1`:
+
+```python
+parameter -= learning_rate * gradient
+```
+
+The script logs the loss every 100 iterations. Run the Day 5 implementation with:
+
+```bash
+python multiexample_back_prop.py
+```
+
+The output first shows analytical-versus-numerical gradients, then reports the training loss at iterations `0`, `100`, and so on through `900`. This makes the file both an implementation of multi-example backpropagation and a small, inspectable test of its gradient calculations.
