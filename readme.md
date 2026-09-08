@@ -233,3 +233,13 @@ W2, b2 -> Z2 -> sigmoid -> y_hat (1 output x 4 examples)
 ```
 
 Each column represents one training example. `w1` and `b1` connect the two input features to the hidden layer, while `w2` and `b2` connect the hidden layer to the single output neuron.
+
+## Separated loss and gradient functions
+
+`compute_loss(...)` performs only the forward pass and returns the average squared-error loss. `compute_gradients(...)` repeats the forward pass, computes the output and hidden-layer deltas, and returns:
+
+```text
+loss, dw1, db1, dw2, db2
+```
+
+Keeping these responsibilities explicit lets the same loss function be reused by numerical gradient checking while the training loop consumes the analytical gradients.
