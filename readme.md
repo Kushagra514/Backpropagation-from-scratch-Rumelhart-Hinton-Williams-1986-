@@ -211,3 +211,9 @@ python multiexample_back_prop.py
 ```
 
 The script prints the loss before each parameter update and reports the iteration number. With the current initialization, the loss decreases to approximately `0.093039` by iteration `999`, showing the network learning from all four examples in each batch update.
+
+---
+
+# Day 5: Modular Multi-Example Backpropagation
+
+Day 5 updates [multiexample_back_prop.py](multiexample_back_prop.py) to make the multi-example network easier to verify and understand. The architecture is still a `2 -> 2 -> 1` sigmoid network, but its loss calculation, gradient calculation, gradient checking, and training loop are separated into explicit stages.
