@@ -42,7 +42,7 @@ The script prints the loss over many iterations, showing the model improving ove
 
 # Day 2: Two-Neuron Layer
 
-This section extends the same idea to a small layer with two neurons. The file [2neruon_layer.py](2neruon_layer.py) builds a simple matrix-based forward pass and computes the gradients needed for learning.
+This section extends the same idea to a small layer with two neurons. The file [2neuron_layer.py](2neuron_layer.py) builds a simple matrix-based forward pass and computes the gradients needed for learning.
 
 The layer uses:
 
@@ -90,7 +90,7 @@ This shows how the same backpropagation rule scales from one neuron to a small n
 ## Run it
 
 ```bash
-python 2neruon_layer.py
+python 2neuron_layer.py
 ```
 
 The script prints the loss and gradient values at each iteration, helping visualize how the model updates over time.
