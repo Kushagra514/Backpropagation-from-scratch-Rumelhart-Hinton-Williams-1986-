@@ -269,3 +269,17 @@ python multiexample_back_prop.py
 ```
 
 The output first shows analytical-versus-numerical gradients, then reports the training loss at iterations `0`, `100`, and so on through `900`. This makes the file both an implementation of multi-example backpropagation and a small, inspectable test of its gradient calculations.
+
+---
+
+# PyTorch Comparison
+
+[pytorch_comparison.py](pytorch_comparison.py) recreates the same network, parameters, dataset, and squared-error loss with PyTorch. It uses automatic differentiation to print the loss and gradients alongside the manual implementation.
+
+## Run it
+
+Install PyTorch in the active Python environment, then run:
+
+```bash
+python pytorch_comparison.py
+```
