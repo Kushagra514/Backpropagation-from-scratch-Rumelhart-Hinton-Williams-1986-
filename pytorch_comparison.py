@@ -1,70 +1,78 @@
-import torch
+import numpy as np
+import torch 
 import torch.nn as nn
 
-#same dataset
-x_torch = torch.tensor([
+#1 dataset
+
+X = np.array([
     [2.0,3.0],
     [1.0,1.0],
     [3.0,2.0],
     [0.0,1.0]
-])
+],dtype = np.float32)
 
-y_torch = torch.tensor([
+y = np.array([
     [1.0],
     [0.0],
     [1.0],
     [0.0]
-])
-
-model = nn.Sequential(
-    nn.Linear(2,2),
-    nn.Sigmoid(),
-    nn.Linear(2,1),
-    nn.Sigmoid()
-)
-
-#same initial parameters
-with torch.no_grad():
-    model[0].weight.copy_(torch.tensor([
-        [0.5,0.2],
-        [0.1,0.4]
-    ]))
-
-    model[0].bias.copy_(torch.tensor([
-        0.1,
-        0.2 
-    ]))
-    model[2].weight.copy_(torch.tensor([
-        [0.3,0.6]
-    ]))
-    model[2].bias.copy_(torch.tensor([
-        0.1
-    ]))
+],dtype = np.float32)
 
 
-def loss_function(y_hat,y):
-    return 0.5 * torch.mean((y_hat-y) ** 2)
+#activation functions
 
-#forward pass
-y_hat_torch = model(x_torch)
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
 
-loss_torch = loss_function(y_hat_torch,y_torch)
+def sigmoid_der_frm_activation(a):
+    """
+    If a = sigmoid(z), then 
+        sigmoid'(z) = a(1-a)
+    """
+    return a*(1-a)
 
-#backpropogation 
-loss_torch.backward()
+#manual neural network 
+#following conventions were used
 
-print("Pytorch Loss:",loss_torch.item())
+#X : (number of examples,input_features)
+#W1 : (input_features, hidden_neurons)
+#b1 : (1,hidden_neurons)
+#W2 : (hidden_neurons,output_neurons)
+#b2 : (1,output_neurons)
 
-print("\nPytorch gradients:")
-print("dw1:")
-print(model[0].weight.grad)
+W1 = np.array([
+    [0.10,0.20],
+    [0.30,0.40]
+], dtype = np.float32)
 
-print("\ndb1:")
-print(model[0].bias.grad)
+b1 = np.array([
+    [0.10, 0.10]
+],dtype = np.float32)
 
-print("\ndw2:")
-print(model[2].weight.grad)
+W2 = np.array([
+    [0.50],
+    [0.60]
+],dtype = np.float32)
 
-print("\ndb2:")
-print(model[2].bias.grad)
+b2 = np.array([
+    [0.10]
+],dtype = np.float32)
+
+
+#manual forward pass
+def manual_forward(X,W1,b1,W2,b2):
+
+    #First layer
+    z1 = X @ W1 + b1 
+
+    #hidden activation
+    A1 = sigmoid(z1)
+
+    #second layer
+    z2 = A1 @ W2 + b2
+
+    #output activation
+    y_hat = sigmoid(z2)
+
+    return z1,A1,z2,y_hat
 
