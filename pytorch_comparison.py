@@ -76,3 +76,58 @@ def manual_forward(X,W1,b1,W2,b2):
 
     return z1,A1,z2,y_hat
 
+#manual loss
+def manual_loss(y,y_hat):
+    return 0.5 * np.sum((y - y_hat) ** 2)
+
+#manual backpropagation
+def manual_backward(X,y,z1,A1,z2,y_hat,w2):
+    #s1 dl/dy_hat
+    #l = 0.5 * ((y_hat - y) ** 2)
+    #dl/dy_hat = y_hat - y
+    dL_dyhat = y_hat - y
+
+    #s2 dy_hat/dz2
+    #y_hat = sigmoid(z2)
+    #derivative = y_hat(1-y_hat)
+
+    dyhat_dz2 = sigmoid_der_frm_activation(y_hat)
+
+    #s3 chain rule
+    #dl/dz2 = dl/dy_hat * dy_hat/dz2
+    dZ2 = dL_dyhat * dyhat_dz2
+
+    #s4 z2 = a1 @ w2 + b2
+    #therefore dl/dw2 = A1.T @ dl/dz2
+
+    dW2 = A1.T @ dZ2
+
+    #s5 dl/db2 every example contributes to the same bias therfore we sum over all the examples
+    db2 = np.sum(dZ2,axis = 0,keepdims=True)
+
+    #s6 = backpropoagte into a1
+    #z2 = A1 @ w2 + b2
+    #dl/A1 = dl/dz2 @ w2.T
+
+    dA1 = dZ2 @ W2.T
+
+    #s7
+    #a1 = sigmoid(z1)
+    #da1/dz1 = a1(1-a1)
+
+    dA1_dZ1 = sigmoid_der_frm_activation(A1)
+
+    #s8 dl/dz1
+    dZ1 = dA1 * dA1_dZ1
+
+    #s9 z1 = X @ w1 + b1
+    #dl/dw1 = X.T @ dZ1 
+
+    dW1 = X.T @ dZ1
+
+    #s10
+    # dL/db1 
+    db1 = np.sum(dZ1,axis = 0, keepdims = True)    
+
+    return dW1,db1,dW2,db2
+
