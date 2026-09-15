@@ -131,3 +131,20 @@ def manual_backward(X,y,z1,A1,z2,y_hat,w2):
 
     return dW1,db1,dW2,db2
 
+
+#manual forward + backward
+Z1, A1 , Z2 , manual_prediction = manual_forward(
+    X,W1,b1,W2,b2
+)
+
+manual_loss_value = manual_loss(manual_prediction,y)
+manual_dw1, manual_db1, manual_dw2,manual_db2 = manual_backward(
+        X,
+        y,
+        Z1,
+        A1,
+        Z2,
+        manual_prediction,
+        W2
+)
+
