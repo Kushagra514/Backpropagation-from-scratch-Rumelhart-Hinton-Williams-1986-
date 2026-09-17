@@ -148,3 +148,74 @@ manual_dw1, manual_db1, manual_dw2,manual_db2 = manual_backward(
         W2
 )
 
+#pytorch model
+x_torch = torch.tensor(X)
+
+y_torch = torch.tesnor(y)
+
+model = nn.Sequential(
+    nn.Linear(2,2),
+    nn.Sigmoid(),
+    nn.Linear(2,1),
+    nn.Sigmoid()
+)
+
+#copying the same initial parameters
+
+with torch.no_grad():
+    #pytorch linear stores weights as:
+    #(output_features,input_features)
+    #therefore transpose our manual W1.
+
+    model[0].weight.copy_(
+        torch.tensor(W1.T)
+    )
+
+    model[0].bias.copy(
+        torch.tensor(b1[0])
+    )
+
+    #same w2    
+    #manual w2 shape: (2,1)
+    #pytorch linear weight:
+    #(1,2)
+
+    model[2].weight.copy_(
+        torch.tensor(W2.T)
+    )
+
+    model[2].bias.copy_(
+        torch.tensor(b2[0])
+    )
+
+    #pytorch loss
+
+    def torch_loss(y_hat,y):
+        return 0.5 * torch.sum(
+            (y_hat - y) ** 2
+        )
+
+    #pytorch forward and backward
+
+    torch_prediction = model(x_torch)
+    torch_loss_value = torch_loss(
+        torch_prediction,
+        y_torch
+    )
+
+    torch_loss_value.backward()
+
+    #print losses
+    print("=== Loss Comparision ===")
+
+    print(
+        "Manual Loss: ",
+        manual_loss_value
+    )
+
+    print(
+        "Pytorch loss:",
+        torch_loss_value.item()
+    )
+
+    #print Gradients

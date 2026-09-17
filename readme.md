@@ -240,11 +240,11 @@ Each column represents one training example. `w1` and `b1` connect the two input
 
 ```text
 loss, dw1, db1, dw2, db2
-```
+```																																			
 
 Keeping these responsibilities explicit lets the same loss function be reused by numerical gradient checking while the training loop consumes the analytical gradients.
 
-## Numerical gradient checking
+## Numerical gradient checking						
 
 Before normal training begins, `numerical_gradient(...)` checks selected parameters using the central-difference approximation:
 
