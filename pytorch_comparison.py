@@ -257,5 +257,43 @@ with torch.no_grad():
     torch_db2 = model[2].bias.grad.detach().numpy().reshape(1,1)
 
     #print("\n Gradient differences")
+    dw1_difference = np.max(
+        np.abs(manual_dw1 - torch_dw1)
+    )
 
-    
+    db1_difference = np.max(
+        np.abs(manual_db1 - torch_db1)
+    )
+
+    dw2_difference = np.max(
+        np.abs(manual_dw2 - torch_dw2)
+    )
+
+    db2_difference = np.max(
+        np.abs(manual_db2 - torch_db2)
+    )
+
+    print("dW1 max difference:", dw1_difference)
+    print("db1 max difference:", db1_difference)
+    print("dW2 max difference:", dw2_difference)
+    print("db2 max difference:", db2_difference)
+
+    #final verification
+
+    tolerance = 1e-6
+
+    all_gradients_match = (
+        dw1_difference < tolerance
+        and db1_difference < tolerance
+        and dw2_difference < tolerance
+        and db2_difference < tolerance
+    )
+
+    print("\n========== FINAL RESULT ==========")
+
+    if all_gradients_match:
+        print("PASS: Manual gradients match PyTorch gradients.")
+    else:
+        print("FAIL: Manual gradients do not match PyTorch gradients.")
+
+                                                                                                                                                                                                                                                  
