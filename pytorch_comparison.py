@@ -219,3 +219,43 @@ with torch.no_grad():
     )
 
     #print Gradients
+
+    print("===Manual Gradients===")
+    print("\ndw1:")
+    print(manual_dw1)
+
+    print("\ndb1:")
+    print(manual_db2)
+
+    print("\ndw2:")
+    print(manual_dw2)
+
+    print("\ndb2:")
+    print(manual_db2)
+
+    print("\n===Pytorch gradients===")
+    print("\n1dw1:")
+    print(model[0].weight.grad)
+
+    print("\ndb1:")
+    print(model[0].bias.grad)
+
+    print("\ndw2:")
+    print(model[2].weight.grad)
+
+    print("\ndb2:")
+    print(model[2].bias.grad)
+
+
+    #gradient comparison
+    #pytorch stores linear weights transposed relative to our manual convention,so have to transpose them back
+
+    torch_dw1 = model[0].weight.grad.detach().numpy().T
+    torch_db1 = model[0].bias.grad.detach().numpy().reshape(1,2)
+
+    torch_dw2 = model[2].weight.grad.detach().numpy().T
+    torch_db2 = model[2].bias.grad.detach().numpy().reshape(1,1)
+
+    #print("\n Gradient differences")
+
+    
