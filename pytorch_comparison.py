@@ -171,7 +171,7 @@ with torch.no_grad():
         torch.tensor(W1.T)
     )
 
-    model[0].bias.copy(
+    model[0].bias.copy_(
         torch.tensor(b1[0])
     )
 
