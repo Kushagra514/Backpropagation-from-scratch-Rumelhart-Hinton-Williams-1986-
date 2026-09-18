@@ -151,7 +151,7 @@ manual_dw1, manual_db1, manual_dw2,manual_db2 = manual_backward(
 #pytorch model
 x_torch = torch.tensor(X)
 
-y_torch = torch.tesnor(y)
+y_torch = torch.tensor(y)
 
 model = nn.Sequential(
     nn.Linear(2,2),
