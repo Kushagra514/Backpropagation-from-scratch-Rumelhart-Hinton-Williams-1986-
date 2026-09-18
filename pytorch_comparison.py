@@ -227,7 +227,7 @@ with torch.no_grad():
     print(manual_dw1)
 
     print("\ndb1:")
-    print(manual_db2)
+    print(manual_db1)
 
     print("\ndw2:")
     print(manual_dw2)
