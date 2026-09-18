@@ -1,285 +1,148 @@
-# Day 1: Backpropagation Basics
+# Backpropagation From Scratch
 
-This project is a simple implementation of the backpropagation idea from the paper *Learning representations by back-propagating errors* by Rumelhart, Hinton, and Williams.
+Small, explicit Python implementations of backpropagation, built as a progression from one trainable neuron to a multi-example neural network. The final example verifies the hand-derived gradients against PyTorch autograd.
 
-The code in [1neuron.py](1neuron.py) shows how a single neuron learns by:
+The implementations intentionally keep the matrix operations and chain rule visible. They use sigmoid activations and squared-error loss rather than hiding the learning process behind a training framework.
 
-- doing a forward pass,
-- computing loss,
-- applying the chain rule backward,
-- updating weights and bias with gradient descent.
+## Learning progression
 
-## Example
+| File | Model | Main idea |
+| --- | --- | --- |
+| [1neuron.py](1neuron.py) | One neuron | Forward pass, loss, derivatives, and gradient descent |
+| [2neuron_layer.py](2neuron_layer.py) | Two-neuron layer | Vector-style weights, per-neuron deltas, and updates |
+| [hidden_neuron_layer.py](hidden_neuron_layer.py) | `2 -> 2 -> 1` network | Backpropagation through a hidden layer |
+| [multiexample_back_prop.py](multiexample_back_prop.py) | `2 -> 2 -> 1` network | Batch loss, analytical gradients, numerical gradient checking, and training |
+| [pytorch_comparison.py](pytorch_comparison.py) | `2 -> 2 -> 1` network | Manual gradients compared with PyTorch autograd |
 
-```python
-z = w * x * b
-a = sigmoid(z)
-loss = 0.5 * (a - y) ** 2
-```
+## Core equations
 
-The key gradient steps are:
-
-```python
-dL_da = a - y
-da_dz = a * (1 - a)
-dL_dw = dL_da * da_dz * x
-dL_db = dL_da * da_dz
-w -= learning_rate * dL_dw
-b -= learning_rate * dL_db
-```
-
-This is the core idea behind backpropagation: compute the error, propagate it backward, and adjust the parameters to reduce loss.
-
-## Run it
-
-```bash
-python 1neuron.py
-```
-
-The script prints the loss over many iterations, showing the model improving over time.
-
----
-
-# Day 2: Two-Neuron Layer
-
-This section extends the same idea to a small layer with two neurons. The file [2neuron_layer.py](2neuron_layer.py) builds a simple matrix-based forward pass and computes the gradients needed for learning.
-
-The layer uses:
-
-- weights `w`
-- inputs `x`
-- bias `b`
-- output activations `a`
-- target values `y`
-
-## Forward pass
-
-```python
-z = w * x + b
-a = sigmoid(z)
-```
-
-The loss is computed as the sum of squared errors across the neurons:
-
-```python
-loss += 0.5 * (a[i][0] - y[i][0]) ** 2
-```
-
-## Backward pass
-
-The derivative for each output is:
-
-```python
-delta[i][0] = (a[i][0] - y[i][0]) * a[i][0] * (1 - a[i][0])
-```
-
-Then the weight gradient is computed using the input values:
-
-```python
-dW[i][j] = delta[i][0] * x[j][0]
-```
-
-and the bias gradient is simply:
-
-```python
-db[i][0] = delta[i][0]
-```
-
-This shows how the same backpropagation rule scales from one neuron to a small neural network layer.
-
-## Run it
-
-```bash
-python 2neuron_layer.py
-```
-
-The script prints the loss and gradient values at each iteration, helping visualize how the model updates over time.
-
----
-
-# Day 3: Hidden Neuron Layer
-
-Day 3 introduces a two-layer neural network in [hidden_neuron_layer.py](hidden_neuron_layer.py). The network takes two input values, passes them through a hidden layer containing two neurons, and produces one output value.
-
-## Network structure
+For a sigmoid unit:
 
 ```text
-2 inputs -> 2 hidden neurons -> 1 output neuron
+sigmoid(z) = 1 / (1 + exp(-z))
+sigmoid'(z) = sigmoid(z) * (1 - sigmoid(z))
 ```
 
-The forward pass calculates the hidden layer first:
+The examples use the per-example squared-error loss:
 
-```python
-z1 = w1 @ x + b1
-h = sigmoid(z1)
+```text
+L = 0.5 * (y_hat - y)^2
 ```
 
-The hidden activations are then used by the output neuron:
+For the output unit, the error signal is:
 
-```python
-z2 = w2 @ h + b2
-y_hat = sigmoid(z2)
-```
-
-The model uses squared error loss:
-
-```python
-loss = 0.5 * (y_hat - y) ** 2
-```
-
-During the backward pass, the output error is propagated back through the output weights and the hidden-layer sigmoid derivatives:
-
-```python
+```text
 delta2 = (y_hat - y) * y_hat * (1 - y_hat)
-dL_dh = w2.T @ delta2
-delta1 = dL_dh * h * (1 - h)
 ```
 
-Gradients are calculated for `w1`, `b1`, `w2`, and `b2`, then all parameters are updated with gradient descent. This demonstrates how backpropagation learns through a hidden layer instead of updating only the output neuron.
+The hidden-layer signal applies the chain rule through the output weights and hidden sigmoid:
 
-## Run it
+```text
+dL/dH = W2.T @ delta2
+delta1 = dL/dH * H * (1 - H)
+```
+
+For the multi-example implementation, gradients are accumulated across the four examples and divided by `N`, because its reported loss is the average batch loss.
+
+## Running the examples
+
+The first four scripts use only the Python standard library. The PyTorch comparison requires NumPy and PyTorch.
+
+From the project directory, create and configure the virtual environment used by this workspace:
 
 ```bash
-python hidden_neuron_layer.py
+python -m venv .venv
+.venv/bin/python -m pip install numpy torch
 ```
 
-The script prints the loss for each of the 10 training iterations.
+Run an individual example with:
 
----
+```bash
+.venv/bin/python 1neuron.py
+.venv/bin/python 2neuron_layer.py
+.venv/bin/python hidden_neuron_layer.py
+.venv/bin/python multiexample_back_prop.py
+.venv/bin/python pytorch_comparison.py
+```
 
-# Day 4: Multiple Examples with a Hidden Layer
+## What each script demonstrates
 
-[multiexample_back_prop.py](multiexample_back_prop.py) extends the hidden-layer example to train on four examples at once. It uses a network with two input features, two hidden neurons, and one output neuron.
+### `1neuron.py`
 
-## Data and parameters
+Trains one sigmoid neuron for 110,000 iterations. It prints the loss on every iteration. With the current initialization, the final printed loss is approximately `0.000002`.
 
-The input matrix stores features by row and examples by column:
+### `2neuron_layer.py`
 
-```python
-X = [
-	[2, 1, 3, 0],
-	[3, 1, 2, 1],
-]
+Implements a two-neuron layer with nested Python lists. Each iteration prints the loss, output deltas, weight gradients, and bias gradients. After the ten iterations currently configured, the final printed loss is approximately `0.119257`.
+
+### `hidden_neuron_layer.py`
+
+Builds a single-example `2 -> 2 -> 1` sigmoid network. It explicitly computes the output delta, propagates it into the hidden layer, and updates `w1`, `b1`, `w2`, and `b2`. After ten iterations, the final printed loss is approximately `0.036872`.
+
+### `multiexample_back_prop.py`
+
+Extends the same architecture to four examples. Its data is stored as features by rows and examples by columns:
+
+```text
+X = [[2, 1, 3, 0],
+     [3, 1, 2, 1]]
 Y = [[1, 0, 1, 0]]
 ```
 
-The script trains for `1000` iterations with a learning rate of `0.1`. The weights and biases are initialized explicitly so each step of the calculation remains visible.
+The script separates the workflow into:
 
-## Forward pass
+1. `compute_loss(...)` for the forward pass and average loss.
+2. `compute_gradients(...)` for analytical backpropagation.
+3. `numerical_gradient(...)` for central-difference checking.
+4. A 1,000-iteration training loop.
 
-For every iteration, the script computes the hidden pre-activations and applies the sigmoid function to each example:
-
-```python
-z1 = w1 @ X + b1
-H = sigmoid(z1)
-```
-
-The output neuron then combines the hidden activations and produces one prediction per example:
-
-```python
-z2 = w2 @ H + b2
-y_hat = sigmoid(z2)
-```
-
-The loss is the average of the per-example squared errors:
-
-```python
-loss = (1 / N) * sum(0.5 * (y_hat[0][k] - Y[0][k]) ** 2 for k in range(N))
-```
-
-## Backward pass
-
-The output delta applies the squared-error derivative, the sigmoid derivative, and the average over the four examples:
-
-```python
-delta2 = (y_hat - Y) * y_hat * (1 - y_hat) / N
-```
-
-The script uses this delta to calculate gradients for the output weights and bias. It then propagates the error through `w2` and the hidden sigmoid activations:
-
-```python
-dL_dh = w2.T @ delta2
-delta1 = dL_dh * H * (1 - H)
-```
-
-Finally, it accumulates `dw1`, `db1`, `dw2`, and `db2` across all examples and updates every parameter with gradient descent.
-
-## Run it
-
-```bash
-python multiexample_back_prop.py
-```
-
-The script prints the loss before each parameter update and reports the iteration number. With the current initialization, the loss decreases to approximately `0.093039` by iteration `999`, showing the network learning from all four examples in each batch update.
-
----
-
-# Day 5: Modular Multi-Example Backpropagation
-
-Day 5 updates [multiexample_back_prop.py](multiexample_back_prop.py) to make the multi-example network easier to verify and understand. The architecture is still a `2 -> 2 -> 1` sigmoid network, but its loss calculation, gradient calculation, gradient checking, and training loop are separated into explicit stages.
-
-## Architecture
-
-The script keeps the model parameters and dataset at module scope:
+The numerical check uses:
 
 ```text
-X (2 features x 4 examples)
-	|
-	v
-W1, b1 -> Z1 -> sigmoid -> H (2 hidden neurons x 4 examples)
-	|
-	v
-W2, b2 -> Z2 -> sigmoid -> y_hat (1 output x 4 examples)
+(loss(parameter + epsilon) - loss(parameter - epsilon)) / (2 * epsilon)
 ```
 
-Each column represents one training example. `w1` and `b1` connect the two input features to the hidden layer, while `w2` and `b2` connect the hidden layer to the single output neuron.
+The current run reports close agreement between analytical and numerical gradients. Training logs show the average loss decreasing from `0.133016` at iteration `0` to `0.097047` at iteration `900`.
 
-## Separated loss and gradient functions
+### `pytorch_comparison.py`
 
-`compute_loss(...)` performs only the forward pass and returns the average squared-error loss. `compute_gradients(...)` repeats the forward pass, computes the output and hidden-layer deltas, and returns:
+Recreates the manual network with:
 
 ```text
-loss, dw1, db1, dw2, db2
-```																																			
-
-Keeping these responsibilities explicit lets the same loss function be reused by numerical gradient checking while the training loop consumes the analytical gradients.
-
-## Numerical gradient checking						
-
-Before normal training begins, `numerical_gradient(...)` checks selected parameters using the central-difference approximation:
-
-```python
-gradient = (loss_plus - loss_minus) / (2 * epsilon)
+4 examples -> 2 input features -> 2 hidden neurons -> 1 output
 ```
 
-For each checked weight or bias, the function temporarily evaluates the loss at `parameter + epsilon` and `parameter - epsilon`, then restores the original value. The script prints the analytical and numerical gradients for `w1`, `b1`, `w2`, and `b2` so the chain-rule implementation can be compared against an independent estimate.
+Unlike `multiexample_back_prop.py`, this file stores one example per row in `X`, matching the batch convention used by `torch.nn.Linear`. It initializes the PyTorch weights from the manual parameters, computes the same summed squared-error loss, and compares every gradient.
 
-## Training and verification
+The final verification metric is the maximum absolute difference for each parameter gradient:
 
-After gradient checking, the normal training loop calls `compute_gradients(...)` 1,000 times and updates every weight and bias with learning rate `0.1`:
-
-```python
-parameter -= learning_rate * gradient
+```text
+max(abs(manual_gradient - pytorch_gradient)) < 1e-6
 ```
 
-The script logs the loss every 100 iterations. Run the Day 5 implementation with:
+With the current parameters, the comparison produces:
 
-```bash
-python multiexample_back_prop.py
+```text
+Manual loss:  0.5490019
+PyTorch loss: 0.5490018725
+dW1 max difference: 2.79e-09
+db1 max difference: 1.86e-09
+dW2 max difference: 1.49e-08
+db2 max difference: 1.49e-08
 ```
 
-The output first shows analytical-versus-numerical gradients, then reports the training loss at iterations `0`, `100`, and so on through `900`. This makes the file both an implementation of multi-example backpropagation and a small, inspectable test of its gradient calculations.
+The script ends with:
 
----
-
-# PyTorch Comparison
-
-[pytorch_comparison.py](pytorch_comparison.py) recreates the same network, parameters, dataset, and squared-error loss with PyTorch. It uses automatic differentiation to print the loss and gradients alongside the manual implementation.
-
-## Run it
-
-Install PyTorch in the active Python environment, then run:
-
-```bash
-python pytorch_comparison.py
+```text
+PASS: Manual gradients match PyTorch gradients.
 ```
+
+This is the strongest verification in the project: the independently derived NumPy gradients agree with automatic differentiation to floating-point precision.
+
+## Notes on conventions
+
+- `multiexample_back_prop.py` uses shape `(features, examples)` for `X`.
+- `pytorch_comparison.py` uses shape `(examples, features)` for `X`.
+- Manual weight matrices follow `input_features x output_features` for the first layer and `hidden_neurons x output_neurons` for the second layer.
+- PyTorch stores `nn.Linear` weights as `output_features x input_features`, so the comparison transposes them before checking the gradients.
+- All examples use sigmoid activations and squared-error loss to keep the chain rule easy to inspect.
