@@ -188,6 +188,8 @@ with torch.no_grad():
         torch.tensor(b2[0])
     )
 
+    torch.set_grad_enabled(True)
+
     #pytorch loss
 
     def torch_loss(y_hat,y):
