@@ -146,3 +146,13 @@ This is the strongest verification in the project: the independently derived Num
 - Manual weight matrices follow `input_features x output_features` for the first layer and `hidden_neurons x output_neurons` for the second layer.
 - PyTorch stores `nn.Linear` weights as `output_features x input_features`, so the comparison transposes them before checking the gradients.
 - All examples use sigmoid activations and squared-error loss to keep the chain rule easy to inspect.
+
+## Reference
+
+The backpropagation algorithm implemented in this project is based on:
+
+> Rumelhart, D. E., Hinton, G. E., & Williams, R. J. (1986).
+> Learning representations by back-propagating errors.
+> Nature, 323, 533–536.
+
+[Paper — Nature](https://www.nature.com/articles/323533a0)
