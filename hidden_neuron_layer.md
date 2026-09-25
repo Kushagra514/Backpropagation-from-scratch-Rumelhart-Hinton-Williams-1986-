@@ -216,7 +216,7 @@ All four parameter groups updated with `η = 0.1` per iteration.
 
 ---
 
-## 7. Interview Questions
+## 7. Insights
 
 **Q1: Why does `W²ᵀ` appear when computing the hidden layer's error signal?**
 Because `z2 = W² h`. Differentiating: `∂z2/∂h = W²`. The chain rule gives `∂L/∂h = (∂L/∂z2)(∂z2/∂h) = δ² W²`. Written as a matrix-vector product with the error vector on the right: `∂L/∂h = W²ᵀ δ²`. The transpose routes each output neuron's error back to the hidden units proportionally to the connecting weights.
