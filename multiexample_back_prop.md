@@ -262,7 +262,7 @@ Loss is printed every 100 iterations.
 
 ---
 
-## 8. Interview Questions
+## 8. Insights
 
 **Q1: Why is `1/N` placed inside `delta2` rather than applied to the final gradients?**
 Because `∂L/∂z2[k] = (1/N)(ŷₖ−yₖ)ŷₖ(1−ŷₖ)` — the `1/N` is genuinely part of the gradient of the average loss. Folding it in early means all downstream gradients (`dw2`, `delta1`, `dw1`, etc.) are automatically scaled, without needing a separate normalisation step.
