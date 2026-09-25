@@ -11,7 +11,7 @@ b = 0.1
 learning_rate = 0.1
 
 for iteration in range(110000):
-    z = w * x * b
+    z = w * x + b
     a = sigmoid(z)
 
     loss = 0.5 * (a - y) ** 2
