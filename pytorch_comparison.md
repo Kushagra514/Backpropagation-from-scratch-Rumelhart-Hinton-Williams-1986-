@@ -199,7 +199,7 @@ The small residual difference (if any) is floating-point rounding — single-pre
 
 ---
 
-## 8. Interview Questions
+## 8. Insights
 
 **Q1: Why does PyTorch store `nn.Linear.weight` as `(out_features, in_features)` instead of `(in_features, out_features)`?**
 PyTorch's `nn.Linear` computes `y = xWᵀ + b` (row-vector input times transposed weight). Storing weights as `(out, in)` lets the forward pass be `x @ weight.T + bias` without an explicit transpose, which is efficient for row-major memory layouts with row-per-example data.
