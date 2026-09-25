@@ -331,7 +331,7 @@ The goal is to understand what frameworks like PyTorch perform automatically. By
 
 ---
 
-## Interview Mental Model
+## Core Mental Model
 
 1. **Forward pass** — compute `z = Wx + b`, then `a = σ(z)`, layer by layer.
 2. **Loss** — `L = 0.5(ŷ − y)²` measures prediction error.
@@ -342,7 +342,7 @@ The goal is to understand what frameworks like PyTorch perform automatically. By
 7. **Propagate backward** — `∂L/∂h = Wᵀ δ`, then gate through `σ′` to get the next δ.
 8. **Gradient descent** — `θ ← θ − η ∂L/∂θ`; move opposite the gradient.
 
-### Questions I should be able to answer
+### Insigts at a glance
 
 - Why is backpropagation just the chain rule?
 - What exactly does `δ` represent, and why is it defined at `z` rather than at `a`?
