@@ -105,7 +105,7 @@ Both parameters move opposite their gradient. `learning_rate = 0.1`.
 
 ---
 
-## 7. Interview Questions
+## 7. Insights 
 
 **Q1: What is δ and why is it useful?**
 `δ = ∂L/∂z = (a − y) · a(1 − a)`. It is the loss sensitivity at the pre-activation `z`. Computing it once lets you derive `∂L/∂w = δ · x` and `∂L/∂b = δ` without repeating work. In deeper networks, it is also used to propagate error backward.
