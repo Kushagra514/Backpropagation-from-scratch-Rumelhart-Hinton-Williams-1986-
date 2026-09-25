@@ -140,7 +140,7 @@ Standard gradient descent applied element-wise.
 
 ---
 
-## 7. Interview Questions
+## 7. Insights
 
 **Q1: What is `dW = δ xᵀ` and why is it an outer product?**
 For each pair `(i, j)`, the gradient `∂L/∂wᵢⱼ = δᵢ · xⱼ`. Arranging all these products into a matrix gives the outer product `δ xᵀ`. Its shape matches `W`: `(output_neurons × input_features)`.
